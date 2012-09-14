@@ -81,7 +81,7 @@ int main(int args, char **argv){
             //printf("%d: MA[%d] = %.2f\n", MyP,  mas[MyP], MAX);
             //#pragma omp barrier
 
-            #pragma omp single
+            #pragma omp master
             {
             //    printf("\n");
 
@@ -103,12 +103,9 @@ int main(int args, char **argv){
                 }
                 free(mas);
                 printMatrix();
-            }
-
-            #pragma omp master
-            {
                 MAD = MA[i][i];
             }
+            #pragma omp barier
 
             #pragma omp for firstprivate(MAD)
             for (j = i; j <= M; j++){
@@ -131,7 +128,6 @@ int main(int args, char **argv){
                     MA[k][d] -= MA[k][i]*MA[i][d];
                 }
             }
-            #pragma omp barier
 
             #pragma omp single
             {
