@@ -13,7 +13,7 @@
  * (Предполагаем, что размеры данных делятся без остатка на количество
  * компьютеров.) */
    #define M 400
-   #define N 50
+   #define N 200
    #define tegD 1
    #define EL(x) (sizeof(x) / sizeof(x[0]))
 

@@ -2,6 +2,9 @@ CC=gcc
 LD=-lm -lrt
 OMP=-O3 -fopenmp
 
+mg-1:
+	vi metodGaussaOMP-1.c && $(CC) $(LD) $(OMP) metodGaussaOMP-1.c -o metodGaussaOMP-1 && ./metodGaussaOMP-1
+
 omp:
 	$(CC) $(OMP) openmp.c -o openmp
 
