@@ -5,12 +5,15 @@
 #include <math.h>
 #include <string.h>
 
-#define M 3
+#define M 800
 
 double MA[M][M+1], MA2[M][M+1], V[M+1], X[M], MAD, OTV[M];
 
-void printMatrix(){
+int printMatrix(){
     int k, d;
+
+return 0;
+
     for (k = 0; k < M; k++){
         for (d = 0; d <= M; d++){
             printf("%.2f ", MA[k][d]);
@@ -18,6 +21,8 @@ void printMatrix(){
         printf("\n");
     }
     printf("\n");
+
+return 0;
 }
 
 int main(int args, char **argv){
@@ -56,7 +61,7 @@ int main(int args, char **argv){
     for (i = 0; i < M; i++){
 
 
-        #pragma omp parallel shared(mas, size, i, MA) private(j, MyP, MAX)
+        #pragma omp parallel shared(mas, size, i, MA, MAD) private(j, MyP, MAX)
         {
             MyP = omp_get_thread_num();
             #pragma omp single
@@ -68,23 +73,16 @@ int main(int args, char **argv){
             MAX = fabs(MA[i][i]);
             mas[MyP] = i;
 
-            //#pragma omp barrier
             #pragma omp for
             for (j = i+1; j < M; j++){
-            //    printf("%d %d\n", MyP, j);
                 if (fabs(MA[j][i]) > MAX){
                     MAX = fabs(MA[j][i]);
                     mas[MyP] = j;
                 }
             }
 
-            //printf("%d: MA[%d] = %.2f\n", MyP,  mas[MyP], MAX);
-            //#pragma omp barrier
-
-            #pragma omp master
+            #pragma omp single
             {
-            //    printf("\n");
-
                 J = i;
                 MAX = fabs(MA[J][i]);
                 for (j = 0; j < size; j++){
@@ -94,26 +92,27 @@ int main(int args, char **argv){
                     }
                 }
                 if (J != i){
-                    //memcpy(V, MA[i], sizeof(double)*(M+1));
-                    //memcpy(MA[i], MA[J], sizeof(double)*(M+1));
-                    //memcpy(MA[J], V, sizeof(double)*(M+1));
                     memcpy(V, &MA[i][i], sizeof(double)*(M+1-i));
                     memcpy(&MA[i][i], &MA[J][i], sizeof(double)*(M+1-i));
                     memcpy(&MA[J][i], V, sizeof(double)*(M+1-i));
                 }
                 free(mas);
                 printMatrix();
-                MAD = MA[i][i];
             }
-            #pragma omp barier
 
-            #pragma omp for firstprivate(MAD)
-            for (j = i; j <= M; j++){
-                if (MAD != 0)
-                    MA[i][j] /= MAD;
-                else
-                    printf("%d: MAD=%.2f MA[%d][%d] = %.2f\n", MyP, MAD, i, j, MA[i][j]);
+            #pragma omp for
+            for (j = M; j > i; j--){
+
+                if (MA[i][i] != 0){
+                    //printf("%d: MA[%d][%d] = %.2f\n", MyP, i, j, MA[i][j]);
+                    MA[i][j] /= MA[i][i];
+                    //printf("%d: MA[%d][%d] = %.2f\n", MyP, i, j, MA[i][j]);
+                }else
+                    printf("ERROR DIV BY ZERO %d: MA[%d][%d] = %.2f\n", MyP, i, j, MA[i][j]);
             }
+
+            #pragma omp master
+                MA[i][i] = 1;
             
             #pragma omp single
             {
@@ -124,7 +123,7 @@ int main(int args, char **argv){
             for (k = i+1; k < M; k++){
                 for (d = M; d >= i; d--){
                     //printf("%d: %d %d\n", MyP, k, d);
-                    printf("%d: MA[%d][%d] = %.2f -= MA[%d][%d] = %.2f * MA[%d][%d] = %.2f\n", MyP, k, d, MA[k][d], k, i, MA[k][i], i, d, MA[i][d]);
+                    //printf("%d: MA[%d][%d] = %.2f -= MA[%d][%d] = %.2f * MA[%d][%d] = %.2f\n", MyP, k, d, MA[k][d], k, i, MA[k][i], i, d, MA[i][d]);
                     MA[k][d] -= MA[k][i]*MA[i][d];
                 }
             }
@@ -145,7 +144,7 @@ int main(int args, char **argv){
             X[i] -= X[j] * MA[i][j];
     wtime2 = omp_get_wtime();
 
-    printf("Время работы программы %.9f\n", wtime2-wtime1);
+    //printf("Время работы программы %.9f\n", wtime2-wtime1);
 
     for (i = 0; i < M; i++){
         MAD = 0;
@@ -153,9 +152,12 @@ int main(int args, char **argv){
             MAD += MA2[i][j]*X[j];
         }
         MAD -= MA2[i][M];
-        printf("%.9f\n", MAD);
+        if (i < M-1)
+            printf("%.8f+", MAD);
+        else
+            printf("%.8f\n", MAD);
     }
-    printf("\n");
+    //printf("\n");
 
 
 return 0;
