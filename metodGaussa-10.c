@@ -31,16 +31,10 @@ int main(int args, char **argv){
     double wtime1, wtime2, wtick;
 
 
-    wtime1 = omp_get_wtime();
-    wtick = omp_get_wtick();
-    wtime2 = omp_get_wtime();
-    srand((int)((wtime2-wtime1)/wtick));
-
     for (i = 0; i < M; i++){
-        for (j = 0; j < M; j++){
-            MA[i][j] = rand()/(double)RAND_MAX*10.0;
+        for (j = 0; j <= M; j++){
+            fscanf(stdin, "%lf", &MA[i][j]);
         }
-        MA[i][M] = i;
     }
 
     printMatrix();

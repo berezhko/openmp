@@ -7,7 +7,7 @@
 
 #define M 800
 
-double MA[M][M+1], MA2[M][M+1], V[M+1], X[M], MAD, OTV[M];
+long double MA[M][M+1], MA2[M][M+1], V[M+1], X[M], MAD, OTV[M];
 
 int printMatrix(){
 
@@ -16,7 +16,7 @@ return 0;
     int k, d;
     for (k = 0; k < M; k++){
         for (d = 0; d <= M; d++){
-            printf("%.2f ", MA[k][d]);
+            printf("%.2Lf ", MA[k][d]);
         }
         printf("\n");
     }
@@ -27,44 +27,38 @@ int main(int args, char **argv){
     int size, i, j, v, k, d, p, J;
 
     int * mas;
-    double MAX;
+    long double MAX;
     double wtime1, wtime2, wtick;
 
 
-    wtime1 = omp_get_wtime();
-    wtick = omp_get_wtick();
-    wtime2 = omp_get_wtime();
-    srand((int)((wtime2-wtime1)/wtick));
-
     for (i = 0; i < M; i++){
-        for (j = 0; j < M; j++){
-            MA[i][j] = rand()/(double)RAND_MAX*10.0;
+        for (j = 0; j <= M; j++){
+            fscanf(stdin, "%Lf", &MA[i][j]);
         }
-        MA[i][M] = i;
     }
 
     printMatrix();
 
-    memcpy(MA2, MA, sizeof(double)*M*(M+1));
+    memcpy(MA2, MA, sizeof(long double)*M*(M+1));
 
     wtime1 = omp_get_wtime();
     for (i = 0; i < M; i++){
 
         printMatrix();
 
-        MAX = fabs(MA[i][i]);
+        MAX = fabsl(MA[i][i]);
         J = i;
         for (j = i+1; j < M; j++){
-            if (fabs(MA[j][i]) > MAX){
-                MAX = fabs(MA[j][i]);
+            if (fabsl(MA[j][i]) > MAX){
+                MAX = fabsl(MA[j][i]);
                 J = j;
             }
         }
 
         if (J != i){
-            memcpy(V, &MA[i][i], sizeof(double)*(M+1-i));
-            memcpy(&MA[i][i], &MA[J][i], sizeof(double)*(M+1-i));
-            memcpy(&MA[J][i], V, sizeof(double)*(M+1-i));
+            memcpy(V, &MA[i][i], sizeof(long double)*(M+1-i));
+            memcpy(&MA[i][i], &MA[J][i], sizeof(long double)*(M+1-i));
+            memcpy(&MA[J][i], V, sizeof(long double)*(M+1-i));
         }
 
         printMatrix();
@@ -73,7 +67,7 @@ int main(int args, char **argv){
             for (j = M; j >= i; j--)
                 MA[i][j] /= MA[i][i];
         }else{
-            fprintf(stderr, "Система не совместна\nMA[%d]=%.2f MA[%d][%d] = %.2f\n", i, MA[i][i], i, j, MA[i][j]);
+            fprintf(stderr, "Система не совместна\nMA[%d]=%.2Lf MA[%d][%d] = %.2Lf\n", i, MA[i][i], i, j, MA[i][j]);
             return 0;
         }
 
@@ -107,9 +101,9 @@ int main(int args, char **argv){
         }
         MAD -= MA2[i][M];
         if (i < M-1)
-            printf("%.12f+", MAD);
+            printf("%.12Lf+", MAD);
         else
-            printf("%.12f\n", MAD);
+            printf("%.12Lf\n", MAD);
     }
     printf("\n");
 

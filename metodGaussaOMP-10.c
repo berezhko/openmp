@@ -37,17 +37,10 @@ int main(int args, char **argv){
  * правой части, который присоединяется дополнительным столбцом к A.
  * Нулевая ветвь генерирует нулевую полосу, первая ветвь - первую полосу
  * и т.д. (По диагонали исходной матрицы - числа = 2, остальные числа = 1). */
-    wtime1 = omp_get_wtime();
-    wtick = omp_get_wtick();
-    wtime2 = omp_get_wtime();
-    srand((int)((wtime2-wtime1)/wtick));
-
-    #pragma omp for
     for (i = 0; i < M; i++){
-        for (j = 0; j < M; j++){
-            MA[i][j] = rand()/(double)RAND_MAX*10.0;
+        for (j = 0; j <= M; j++){
+            fscanf(stdin, "%lf", &MA[i][j]);
         }
-        MA[i][M] = i;
     }
 
     printMatrix();
