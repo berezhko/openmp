@@ -153,9 +153,9 @@ int main(int args, char **argv){
         }
         MAD -= MA2[i][M];
         if (i < M-1)
-            printf("%.8f+", MAD);
+            printf("%.9f+", MAD);
         else
-            printf("%.8f\n", MAD);
+            printf("%.9f\n", MAD);
     }
     //printf("\n");
 
