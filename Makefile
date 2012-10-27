@@ -1,9 +1,22 @@
 CC=gcc
 LD=-lm -lrt
 OMP=-O3 -fopenmp
+SSE=-msse2
+
+mg-20-sse:
+	vi metodGaussaOMP-20.c && $(CC) $(LD) $(OMP) $(SSE) metodGaussaOMP-20.c -o metodGaussaOMP-20-sse
+
+mg-20:
+	vi metodGaussaOMP-20.c && $(CC) $(LD) $(OMP) metodGaussaOMP-20.c -o metodGaussaOMP-20
+
+mg-10:
+	vi metodGaussaOMP-10.c && $(CC) $(LD) $(OMP) metodGaussaOMP-10.c -o metodGaussaOMP-10
+
+mg-2:
+	vi metodGaussaOMP-2.c && $(CC) $(LD) $(OMP) metodGaussaOMP-2.c -o metodGaussaOMP-2
 
 mg-1:
-	vi metodGaussaOMP-1.c && $(CC) $(LD) $(OMP) metodGaussaOMP-1.c -o metodGaussaOMP-1 && ./metodGaussaOMP-1
+	vi metodGaussaOMP-1.c && $(CC) $(LD) $(OMP) metodGaussaOMP-1.c -o metodGaussaOMP-1
 
 omp:
 	$(CC) $(OMP) openmp.c -o openmp

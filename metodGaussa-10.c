@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 
-#define M 800
+#define M 2000
 
 double MA[M][M+1], MA2[M][M+1], V[M+1], X[M], MAD, OTV[M];
 
@@ -100,10 +100,12 @@ int main(int args, char **argv){
             MAD += MA2[i][j]*X[j];
         }
         MAD -= MA2[i][M];
+        /*
         if (i < M-1)
             printf("%.12f+", MAD);
         else
             printf("%.12f\n", MAD);
+        */
     }
     printf("\n");
 

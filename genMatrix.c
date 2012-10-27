@@ -2,7 +2,7 @@
 #include <time.h>
 #include <stdlib.h>
 
-#define M 800
+#define M 2000
 
 double MA[M][M+1];
 
@@ -19,12 +19,15 @@ int printMatrix(){
 return 0;
 }
 
-int main(int args, char **argv){
+int main(int argc, char **argv){
     int i, j;
     struct timespec tp;
 
     clock_gettime (CLOCK_REALTIME, &tp);
-    srand((int)tp.tv_nsec);
+    if (argc > 1)
+        srand(atoi(argv[1]));
+    else
+        srand((int)tp.tv_nsec);
 
     for (i = 0; i < M; i++){
         for (j = 0; j < M; j++){

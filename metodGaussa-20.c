@@ -5,7 +5,7 @@
 #include <math.h>
 #include <string.h>
 
-#define M 800
+#define M 2000
 
 long double MA[M][M+1], MA2[M][M+1], V[M+1], X[M], MAD, OTV[M];
 
